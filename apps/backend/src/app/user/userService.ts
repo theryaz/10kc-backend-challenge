@@ -29,6 +29,9 @@ export class UserService{
 
 	async login(username: string, password: string): Promise<{ user: UserInfo, token: string }>{
 		const user = await this.userRepository.findByUsername(username);
+		if(user === null){
+			throw new UnauthorizedError();
+		}
 		const valid = user.verifyPassword(password);
 		if(valid === false){
 			throw new UnauthorizedError();
