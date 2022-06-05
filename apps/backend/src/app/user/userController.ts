@@ -14,7 +14,6 @@ export class UserController{
 
 	public createRouter(): Router{
 		const router = Router();
-		// router.get('/user');
 		router.get('/login', this.login.bind(this));
 		router.post('/register', this.registerUser.bind(this));
 		return router;

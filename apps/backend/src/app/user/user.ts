@@ -1,10 +1,8 @@
-import { Service } from 'typedi';
 import { prop } from "@typegoose/typegoose";
 import { randomString, sha256, safeCompare } from '@10kcbackend/crypto'
 import { DomainObject } from "../common/DomainObject";
 import { UserRegisterBody } from './dtos/userRegister';
  
-@Service()
 export class User extends DomainObject{
 	@prop({ index: true }) username: string;
 	@prop() private password: string;
