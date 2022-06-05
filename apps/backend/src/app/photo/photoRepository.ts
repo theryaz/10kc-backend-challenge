@@ -5,6 +5,9 @@ import { InvalidIdError } from '@10kcbackend/errors';
 import { Photo } from "./photo";
 import { GridFsStorage } from 'multer-gridfs-storage';
 import { GridFSBucket } from 'mongodb';
+import { RequestPagination } from "./dtos/RequestPagination";
+import Debug from 'debug';
+const debug = Debug("10kc:PhotoRepository");
 
 @Service()
 export class PhotoRepository{
@@ -38,6 +41,21 @@ export class PhotoRepository{
 			throw new InvalidIdError();
 		}
 		return await this.model.find({ ownerId: userId, private: includePrivate });
+	}
+	async getPagination({ userId, includePrivate = false, params }: { userId: string, params: RequestPagination, includePrivate: boolean }): Promise<{ total: number, page: number, perPage: number, docs: Photo[] }>{
+		if (!isObjectIdOrHexString(userId)){
+			throw new InvalidIdError();
+		}
+		const query = { ownerId: userId, private: includePrivate };
+		debug("getPagination", { params, Skip: params.Skip })
+		const [total, photos] = await Promise.all([
+			this.model.count(query),
+			this.model.find(query)
+				.skip(params.Skip)
+				.limit(params.limit)
+				.exec(),
+		]);
+		return { total, page: params.page, perPage: params.limit, docs: photos }
 	}
 	async deleteById(_id: string | ObjectId): Promise<void>{
 		const photo = await this.findById(_id);

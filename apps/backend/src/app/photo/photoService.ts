@@ -5,6 +5,7 @@ import { NotFoundError } from "@10kcbackend/errors";
 import { User } from "../user/user";
 import { GridFile } from 'multer-gridfs-storage'
 import { Types } from "mongoose";
+import { RequestPagination } from "./dtos/RequestPagination";
 
 @Service()
 export class PhotoService{
@@ -30,6 +31,17 @@ export class PhotoService{
 		const includePrivate = reqUserId === userId;
 		const photos = await this.photoRepository.findByUserId(userId, includePrivate);
 		return photos;
+	}
+	async paginatePhotosByUserId({ reqUserId, userId, params }: {reqUserId:string, userId: string, params: RequestPagination}): Promise<{ docs: Photo[], total: number, page: number, perPage: number }>{
+		const includePrivate = reqUserId === userId;
+		const {docs, total, page, perPage} = await this.photoRepository.getPagination({
+			includePrivate,
+			userId,
+			params,
+		});
+		return {
+			docs, total, page, perPage
+		};
 	}
 
 	/**

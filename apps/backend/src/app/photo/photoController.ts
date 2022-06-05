@@ -8,6 +8,7 @@ import * as multer from 'multer';
 import { GridFile } from 'multer-gridfs-storage';
 import { PhotoReference } from "./dtos/PhotoReference";
 import { UserInfo } from "../user/dtos/UserInfo";
+import { RequestPagination } from "./dtos/RequestPagination";
 
 const debug = Debug("10kc:PhotoController");
 
@@ -21,7 +22,7 @@ export class PhotoController{
 	public createRouter(): Router{
 		const router = Router();
 		router.get('/full/:photoId', this.getFullsizePhoto.bind(this));
-		router.get('/user/:userId', jwtAuth, this.getPhotosByUserId.bind(this));
+		router.get('/user/:userId', jwtAuth, this.paginatePhotosByUserId.bind(this));
 		router.delete('/:photoId', jwtAuth, this.deletePhotoById.bind(this));
 
 		const upload = multer({ storage: this.photoService.getMulterStorageEngine() });
@@ -29,15 +30,24 @@ export class PhotoController{
 		return router;
 	}
 
-	async getPhotosByUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
+	async paginatePhotosByUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const { userId: reqUserId } = req;
 			const { userId } = req.params;
+			const params = RequestPagination.fromParams(req.query);
+			const errors = await params.validate({ validationError: { target: false } });
+			if(errors.length > 0){
+				res.status(400).json({ errors });
+				return;
+			}
 			const user = await this.userService.findById(userId);
-			const photos = await this.photoService.findUserById({ reqUserId, userId });
+			const {docs, total, page, perPage} = await this.photoService.paginatePhotosByUserId({ reqUserId, userId, params });
 			res.json({
 				user: UserInfo.fromUser(user),
-				photos: photos.map(p => PhotoReference.fromPhoto(p))
+				total,
+				page,
+				perPage,
+				docs: docs.map(p => PhotoReference.fromPhoto(p)),
 			});
 		} catch (e) {
 			next(e);
