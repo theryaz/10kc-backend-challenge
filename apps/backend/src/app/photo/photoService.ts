@@ -1,11 +1,13 @@
 import { Service } from "typedi";
 import { Photo } from "./photo";
 import { PhotoRepository } from "./photoRepository";
-import { NotFoundError } from "@10kcbackend/errors";
+import { NotFoundError, PhotoIsPrivateError } from "@10kcbackend/errors";
 import { User } from "../user/user";
 import { GridFile } from 'multer-gridfs-storage'
 import { Types } from "mongoose";
 import { RequestPagination } from "./dtos/RequestPagination";
+import Debug from 'debug';
+const debug = Debug("10kc:PhotoService");
 
 @Service()
 export class PhotoService{
@@ -68,7 +70,8 @@ export class PhotoService{
 	async getFullsizePhoto({ reqUserId, photoId }: { reqUserId: string, photoId: string }){
 		const photo = await this.findById(photoId);
 		if(photo.ownerId.toHexString() !== reqUserId && photo.private === true){
-			throw new NotFoundError("Photo not found");
+			debug("getFullsizePhoto not returning photo since it's private", { reqUserId, ownerId: photo.ownerId });
+			throw new PhotoIsPrivateError();
 		}
 		const stream = await this.photoRepository.getPhotoDataFromGridFs(photo.gridFsId);
 		return {

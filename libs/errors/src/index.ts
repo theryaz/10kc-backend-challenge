@@ -4,3 +4,4 @@ export * from './lib/NotFoundError';
 export * from './lib/UsernameTakenError';
 export * from './lib/InvalidTokenError';
 export * from './lib/UnauthorizedError';
+export * from './lib/PhotoIsPrivateError';

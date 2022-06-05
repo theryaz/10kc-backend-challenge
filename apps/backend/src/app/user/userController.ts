@@ -16,7 +16,7 @@ export class UserController{
 
 	public createRouter(): Router{
 		const router = Router();
-		router.get('/', jwtAuth, this.getUser.bind(this));
+		router.get('/', jwtAuth(), this.getUser.bind(this));
 		router.get('/login', this.login.bind(this));
 		router.post('/register', this.registerUser.bind(this));
 		return router;

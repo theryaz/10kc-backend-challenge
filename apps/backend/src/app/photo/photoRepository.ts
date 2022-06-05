@@ -40,13 +40,20 @@ export class PhotoRepository{
 		if (!isObjectIdOrHexString(userId)){
 			throw new InvalidIdError();
 		}
-		return await this.model.find({ ownerId: userId, private: includePrivate });
+		const query = { ownerId: userId };
+		if (includePrivate === false) {
+			query['private'] = false;
+		}
+		return await this.model.find(query);
 	}
 	async getPagination({ userId, includePrivate = false, params }: { userId: string, params: RequestPagination, includePrivate: boolean }): Promise<{ total: number, page: number, perPage: number, docs: Photo[] }>{
 		if (!isObjectIdOrHexString(userId)){
 			throw new InvalidIdError();
 		}
-		const query = { ownerId: userId, private: includePrivate };
+		const query = { ownerId: userId };
+		if(includePrivate === false){
+			query['private'] = false;
+		}
 		debug("getPagination", { params, Skip: params.Skip })
 		const [total, photos] = await Promise.all([
 			this.model.count(query),

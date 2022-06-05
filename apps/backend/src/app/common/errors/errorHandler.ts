@@ -28,6 +28,9 @@ export function errorHandler(error: BackendError, _: Request, res: Response, nex
 			case 'UnauthorizedError':
 				responseCode = 401;
 				break;
+			case 'PhotoIsPrivateError':
+				responseCode = 403;
+				break;
 			default:
 				responseCode = 500;
 		}

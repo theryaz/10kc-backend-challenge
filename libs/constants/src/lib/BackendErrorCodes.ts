@@ -4,4 +4,5 @@ export const BACKEND_ERROR_CODE = {
   InvalidIdError: "InvalidIdError",
   NotFoundError: "NotFoundError",
   UnauthorizedError: "UnauthorizedError",
+  PhotoIsPrivateError: "PhotoIsPrivateError",
 };

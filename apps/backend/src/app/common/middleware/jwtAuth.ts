@@ -2,10 +2,13 @@ import { verifyJwt } from '@10kcbackend/crypto';
 import { UnauthorizedError } from '@10kcbackend/errors';
 import { Request, Response,  NextFunction } from 'express';
 import { JwtPayload } from '../../user/dtos/JwtPayload';
-export function jwtAuth(req: Request, res: Response, next: NextFunction): void{
+export const jwtAuth = ({ authOptional = false }:{ authOptional?: boolean } = {}) => (req: Request, res: Response, next: NextFunction): void => {
 	const jwt = req.headers['authorization'];
-	if (!jwt){
+	if (!jwt && !authOptional){
 		throw new UnauthorizedError("No JWT Provided in header");
+	} else if (!jwt && authOptional){
+		// No JWT but auth is optional. continue without
+		return next();
 	}
 	// Split Bearer xxx
 	const [,token] = jwt.split(' ');
