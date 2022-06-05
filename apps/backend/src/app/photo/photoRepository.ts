@@ -33,6 +33,19 @@ export class PhotoRepository{
 		}
 		return await this.model.findOne({ _id });
 	}
+	async findByUserId(userId: string | ObjectId, includePrivate: boolean = false): Promise<Photo[]>{
+		if (!isObjectIdOrHexString(userId)){
+			throw new InvalidIdError();
+		}
+		return await this.model.find({ ownerId: userId, private: includePrivate });
+	}
+	async deleteById(_id: string | ObjectId): Promise<void>{
+		const photo = await this.findById(_id);
+		await Promise.all([
+			this.model.deleteOne({ _id: photo._id }),
+			this.bucket.delete(photo.gridFsId),
+		]);
+	}
 
 	async create(photo: Photo): Promise<Photo>{
 		return await this.model.create(photo);

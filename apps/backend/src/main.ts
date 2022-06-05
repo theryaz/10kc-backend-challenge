@@ -7,6 +7,7 @@ import { Container } from 'typedi';
 import { UserController } from './app/user/userController';
 import { PhotoController } from './app/photo/photoController';
 import { errorHandler } from './app/common/errors/errorHandler';
+import { logRequest } from './app/common/middleware/logRequest';
 async function main(){
   await mongoMakeConnection({
     MONGO_URL: BACKEND_CONFIG.MONGO_URL,
@@ -14,6 +15,7 @@ async function main(){
   });
   const app = express();
   app.use(express.json());
+  app.use(logRequest);
   const userController = Container.get(UserController);
   const photoController = Container.get(PhotoController);
   app.use('/user', userController.createRouter());

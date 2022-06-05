@@ -26,6 +26,11 @@ export class PhotoService{
 		}
 		return photo;
 	}
+	async findUserById({ reqUserId, userId }: {reqUserId:string, userId: string}): Promise<Photo[]>{
+		const includePrivate = reqUserId === userId;
+		const photos = await this.photoRepository.findByUserId(userId, includePrivate);
+		return photos;
+	}
 
 	/**
 	 * Associates saved files with a given user
@@ -61,5 +66,20 @@ export class PhotoService{
 
 	async create(photo: Photo): Promise<Photo>{
 		return await this.photoRepository.create(photo);
+	}
+
+	async deleteById({ photoId, reqUserId }: {reqUserId: string, photoId: string}): Promise<void>{
+		const { isOwner } = await this.userIsOwner(reqUserId, photoId);
+		if (isOwner === false){
+			throw new NotFoundError();
+		}
+		await this.photoRepository.deleteById(photoId);
+	}
+	
+	private async userIsOwner(userId: string, photoId: string): Promise<{isOwner: boolean}>{
+		const photo = await this.findById(photoId);
+		return {
+			isOwner: photo.ownerId.toHexString() === userId,
+		};
 	}
 }
