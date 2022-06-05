@@ -5,6 +5,7 @@ import { mongoMakeConnection } from './app/common/mongo';
 
 import { Container } from 'typedi';
 import { UserController } from './app/user/userController';
+import { PhotoController } from './app/photo/photoController';
 import { errorHandler } from './app/common/errors/errorHandler';
 async function main(){
   await mongoMakeConnection({
@@ -14,7 +15,9 @@ async function main(){
   const app = express();
   app.use(express.json());
   const userController = Container.get(UserController);
+  const photoController = Container.get(PhotoController);
   app.use('/user', userController.createRouter());
+  app.use('/photo', photoController.createRouter());
 
   app.use(errorHandler);
 

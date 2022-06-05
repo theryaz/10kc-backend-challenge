@@ -6,26 +6,26 @@ import { User } from "./user";
 
 @Service()
 export class UserRepository{
-	private userModel: ReturnModelType<typeof User>;
+	private model: ReturnModelType<typeof User>;
 	constructor(){
-		this.userModel = getModelForClass(User);
+		this.model = getModelForClass(User);
 	}
 
 	async findAll(): Promise<User[]>{
-		return await this.userModel.find({});
+		return await this.model.find({});
 	}
 	async findById(_id: string | ObjectId): Promise<User | null>{
 		if (!isObjectIdOrHexString(_id)){
 			throw new InvalidIdError();
 		}
-		return await this.userModel.findOne({ _id });
+		return await this.model.findOne({ _id });
 	}
 
 	async findByUsername(username: string): Promise<User | null>{
-		return await this.userModel.findOne({ username });
+		return await this.model.findOne({ username });
 	}
 
 	async create(user: User): Promise<User>{
-		return await this.userModel.create(user);
+		return await this.model.create(user);
 	}
 }
