@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@10kcbackend/constants": ["libs/constants/src/index.ts"],
+      "@10kcbackend/crypto": ["libs/crypto/src/index.ts"],
+      "@10kcbackend/errors": ["libs/errors/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
