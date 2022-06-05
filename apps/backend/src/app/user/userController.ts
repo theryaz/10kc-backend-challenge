@@ -3,6 +3,8 @@ import { UserService } from "./userService";
 import { UserRegisterBody } from './dtos/userRegister';
 import { Service } from "typedi";
 import Debug from "debug";
+import { jwtAuth } from "../common/middleware/jwtAuth";
+import { UserInfo } from "./dtos/UserInfo";
 
 const debug = Debug("10kc:UserController");
 
@@ -14,11 +16,22 @@ export class UserController{
 
 	public createRouter(): Router{
 		const router = Router();
+		router.get('/', jwtAuth, this.getUser.bind(this));
 		router.get('/login', this.login.bind(this));
 		router.post('/register', this.registerUser.bind(this));
 		return router;
 	}
 
+	/** Get the current user by JWT. Auth Middleware demo */
+	async getUser(req: Request, res: Response, next: NextFunction): Promise<void>{
+		try{
+			const { userId } = req;
+			const user = await this.userService.findById(userId);
+			res.json({ user: UserInfo.fromUser(user) });
+		}catch(e){
+			next(e);
+		}
+	}
 	async login(req: Request, res: Response, next: NextFunction): Promise<void>{
 		try{
 			const { username, password } = req.query;
