@@ -9,6 +9,7 @@ import { GridFile } from 'multer-gridfs-storage';
 import { PhotoReference } from "./dtos/PhotoReference";
 import { UserInfo } from "../user/dtos/UserInfo";
 import { RequestPagination } from "./dtos/RequestPagination";
+import { BACKEND_CONFIG } from "../../config";
 
 const debug = Debug("10kc:PhotoController");
 
@@ -48,7 +49,7 @@ export class PhotoController{
 				total,
 				page,
 				perPage,
-				docs: docs.map(p => PhotoReference.fromPhoto(p)),
+				docs: docs.map(p => PhotoReference.fromPhoto(p, BACKEND_CONFIG.BASE_URL)),
 			});
 		} catch (e) {
 			next(e);
@@ -84,7 +85,7 @@ export class PhotoController{
 			const newPhotos = await this.photoService.addUserPhotos({
 				user, privatePhoto, files
 			})
-			res.json({ photos: newPhotos.map(photo => PhotoReference.fromPhoto(photo)) });
+			res.json({ photos: newPhotos.map(photo => PhotoReference.fromPhoto(photo, BACKEND_CONFIG.BASE_URL)) });
 		}catch(e){
 			next(e);
 		}

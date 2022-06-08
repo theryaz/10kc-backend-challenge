@@ -4,6 +4,7 @@ import { BackendConfiguration } from './BackendConfiguration';
 config();
 
 export const BACKEND_CONFIG: BackendConfiguration = {
+	BASE_URL: process.env['BASE_URL'],
 	MONGO_URL: process.env['MONGO_URL'],
 	MONGO_DB_NAME: process.env['MONGO_DB_NAME'],
 };

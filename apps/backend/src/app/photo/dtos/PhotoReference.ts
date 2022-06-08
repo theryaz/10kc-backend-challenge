@@ -15,7 +15,7 @@ export class PhotoReference implements Pick<Photo, "_id" | "ownerId" | "gridFsId
 	thumbUri: string;
 	previewUri: string;
 	
-	static fromPhoto(photo: Photo): PhotoReference {
+	static fromPhoto(photo: Photo, baseUrl: string = ""): PhotoReference {
 		const photoRef = new PhotoReference();
 		photoRef._id = photo._id;
 		photoRef.ownerId = photo.ownerId;
@@ -24,9 +24,9 @@ export class PhotoReference implements Pick<Photo, "_id" | "ownerId" | "gridFsId
 		photoRef.contentType = photo.contentType;
 		photoRef.private = photo.private;
 
-		photoRef.fullSizeUri = `/photo/full/${photo._id}`;
-		photoRef.thumbUri = `/photo/thumb/${photo._id}`;
-		photoRef.previewUri = `/photo/preview/${photo._id}`;
+		photoRef.fullSizeUri = `${baseUrl}/photo/full/${photo._id}`;
+		photoRef.thumbUri = `${baseUrl}/photo/thumb/${photo._id}`;
+		photoRef.previewUri = `${baseUrl}/photo/preview/${photo._id}`;
 		return photoRef;
 	}
 }
