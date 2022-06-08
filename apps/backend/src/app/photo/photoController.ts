@@ -10,6 +10,8 @@ import { PhotoReference } from "./dtos/PhotoReference";
 import { UserInfo } from "../user/dtos/UserInfo";
 import { RequestPagination } from "./dtos/RequestPagination";
 import { BACKEND_CONFIG } from "../../config";
+import { ALLOWED_PHOTO_TYPES } from "@10kcbackend/constants";
+import { UnsupportedImageTypeError } from "@10kcbackend/errors";
 
 const debug = Debug("10kc:PhotoController");
 
@@ -82,6 +84,10 @@ export class PhotoController{
 			const privatePhoto = req.query.private !== undefined ? true : false;
 			const user = await this.userService.findById(userId);
 			const files: GridFile[] = req.files as unknown as GridFile[];
+			const unsupportedImages = files.filter(file => !ALLOWED_PHOTO_TYPES.includes(file.contentType));
+			if(unsupportedImages.length > 0){
+				throw new UnsupportedImageTypeError(`Unsupported image types: ${unsupportedImages.map(img => img.contentType).join(', ')}`);
+			}
 			const newPhotos = await this.photoService.addUserPhotos({
 				user, privatePhoto, files
 			})

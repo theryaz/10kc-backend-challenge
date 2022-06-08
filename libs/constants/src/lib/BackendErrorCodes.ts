@@ -5,4 +5,5 @@ export const BACKEND_ERROR_CODE = {
   NotFoundError: "NotFoundError",
   UnauthorizedError: "UnauthorizedError",
   PhotoIsPrivateError: "PhotoIsPrivateError",
+  UnsupportedImageTypeError: "UnsupportedImageTypeError",
 };
