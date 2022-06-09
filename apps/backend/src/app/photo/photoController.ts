@@ -34,7 +34,7 @@ export class PhotoController{
 		router.delete('/:photoId', jwtAuth(), this.deletePhotoById.bind(this));
 
 		const upload = multer({ storage: this.photoService.getMulterStorageEngine() });
-		router.post('/:userId/upload', jwtAuth(), upload.any(), this.uploadPhoto.bind(this));
+		router.post('/upload', jwtAuth(), upload.any(), this.uploadPhoto.bind(this));
 
 		router.get('/comment/:photoId', this.paginatePhotoComments.bind(this));
 		router.post('/comment/:photoId/add', jwtAuth(), this.addCommentToPhoto.bind(this));

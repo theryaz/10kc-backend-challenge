@@ -9,6 +9,7 @@ export function errorHandler(error: BackendError, _: Request, res: Response, nex
 	if (error && (error as BackendError).code) {
 		const backendError: BackendError = error as BackendError;
 		debug(`Error handled [${backendError.code}]: ${backendError.message}. ${backendError.detail}`, error);
+		console.error(error);
 		const responseBody: any = {
 			error: {
 				message: backendError.message,
