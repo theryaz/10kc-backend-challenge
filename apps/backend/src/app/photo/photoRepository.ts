@@ -5,7 +5,7 @@ import { InvalidIdError } from '@10kcbackend/errors';
 import { Photo } from "./photo";
 import { GridFsStorage } from 'multer-gridfs-storage';
 import { GridFSBucket } from 'mongodb';
-import { RequestPagination } from "./dtos/RequestPagination";
+import { RequestPagination } from "../common/dtos/RequestPagination";
 import Debug from 'debug';
 const debug = Debug("10kc:PhotoRepository");
 

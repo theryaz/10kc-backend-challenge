@@ -5,7 +5,7 @@ import { NotFoundError, PhotoIsPrivateError } from "@10kcbackend/errors";
 import { User } from "../user/user";
 import { GridFile } from 'multer-gridfs-storage'
 import { Types } from "mongoose";
-import { RequestPagination } from "./dtos/RequestPagination";
+import { RequestPagination } from "../common/dtos/RequestPagination";
 import Debug from 'debug';
 const debug = Debug("10kc:PhotoService");
 
