@@ -24,7 +24,9 @@
     - Allows for files larger than 16MB
     - Would help to support animated images like image/gif or video
 
-## Endpoints 
+## Photo Endpoints 
+- `POST /photo/upload` Uploads one or more photos for the requesting user (auth required)
+  - Pass `private` query param to mark new photos as private
 - `GET /photo/:userId` Returns a paginated response of all of a user's photos
   - Auth is not required, but if it is not provided you can only see public photos
   - If Auth is provided and you are looking at your own photos (userId matches JWT userId) then private photos will be included
@@ -34,6 +36,8 @@
 
 - `GET /photo/comment/:photoId` returns a paginated list of comments for a given photoId (no auth required)
 - `POST /photo/comment/:photoId/add` adds a comment to a photo for authenticated user's only
+- `DELETE /photo/:photoId` deletes the photo by id
+- `DELETE /photo/all` deletes all photos for the requesting user (just for convenience)
 
 
 
